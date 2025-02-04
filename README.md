@@ -33,31 +33,68 @@ See [SETUP.md](SETUP.md) for detailed setup instructions.
 
 ## Usage
 
-1. Start the application:
+### Live Demo
+The application is live and can be accessed at:
+- https://madkudu-project-app.streamlit.app/
+- 
+### How to Use
+
+#### 1. Starting an Analysis
+1. Launch the application
+2. You'll be greeted with a welcome message
+3. In the chat input field at the bottom, enter a company name (e.g., "Madkudu")
+
+![Step 1](images/step1.png)
+
+#### 2. Source Verification
+After entering a company name:
+- The bot will search for the company's online presence
+- It will display the found sources (website and/or LinkedIn profile)
+- Click "Yes, analyze these sources" to proceed with the analysis
+
+![Step 2](images/step2.png)
+
+#### 3. Analysis Results
+The bot will present a detailed summary with the following sections by analysis the linkedin and the first website page:
+- 🏢 Company Overview
+- 📊 Sales Intelligence
+- 💰 Pricing Information
+- 📈 Firmographic Data
+- 🎯 Go-to-Market Strategy
+- 📝 Overall Summary
+
+![Step 3](images/step3.png)
+#### 4. Downloading Results
+After the analysis is complete, you can download the results in JSON format:
+- 📊 Website Analysis
+- 💼 LinkedIn Analysis
+- 📝 Summary
+
+#### 5. Deep Analysis
+For a more comprehensive understanding of a company, the bot offers an advanced crawling feature:
+- 🕷️ **Extended Website Analysis**: Systematically explores and analyzes multiple pages of the company's website
+- 🔍 **Multi-Page Intelligence**: Crawls through internal links to gather information from various sections (products, pricing, about, etc.)
+- 📊 **Consolidated Results**: Provides a detailed JSON output containing:
+  - Individual analysis of each crawled page
+  - Cross-page patterns and insights
+  - Comprehensive final summary
+
+Note: This feature is available on-demand as it performs a thorough crawl of the website. For optimal performance, the current version limits crawling to:
+- Maximum depth: 2 levels from the homepage
+- Maximum pages per level: 5 pages
+
+#### 6. Starting a New Analysis
+- Click the "🔄 Start New Analysis" button to begin analyzing another company
+
+### Local Setup
+To run the application locally:
 ```bash
 streamlit run app.py
 ```
 
-2. Enter a company name in the search box
-
-3. The application will:
-   - Search for the company's online presence
-   - Analyze the company website
-   - Analyze LinkedIn profile if available
-   - Generate comprehensive analysis and summary
-   - Provide downloadable reports
-
 ## API Keys Required
 
-The following API keys need to be configured in `.env`:
+The following API keys need to be configured in `.env` for testing AND `.streamlit/secrets.toml` to run the app:
 - `MISTRAL_API_KEY`: For LLM-based analysis
 - `GOOGLE_API_KEY`: For Google Custom Search
 - `GOOGLE_CSE_ID`: For Google Custom Search Engine
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
