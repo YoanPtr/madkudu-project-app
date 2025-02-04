@@ -1,0 +1,15 @@
+google-api-python-client
+requests
+lxml_html_clean
+python-dotenv
+mistralai
+selenium
+undetected-chromedriver
+beautifulsoup4
+pandas
+langchain
+langchain_community
+aiohttp
+tqdm
+pydantic
+pytest
