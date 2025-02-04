@@ -67,7 +67,7 @@ Only return the JSON object, no other text. For employees, focus on finding lead
         Returns:
             str: Clean text content from the HTML
         """
-        soup = BeautifulSoup(html_content, 'lxml')
+        soup = BeautifulSoup(html_content)
         
         # Remove script and style elements
         for script in soup(["script", "style"]):
