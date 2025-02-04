@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from langchain_mistralai import ChatMistralAI
 from pydantic import BaseModel, Field
 from langchain_core.prompts import ChatPromptTemplate
-from langchain.output_parsers import PydanticOutputParser
+from langchain.output_parsers import PydanticOutputParser,OutputFixingParser
 import httpx
 import time
 
@@ -33,7 +33,8 @@ class LinkedInAnalyzer:
     def __init__(self, api_key: str):
         """Initialize the LinkedIn analyzer with Mistral API key"""
         self.llm = ChatMistralAI(mistral_api_key=api_key)
-        self.parser = PydanticOutputParser(pydantic_object=LinkedInCompany)
+        base_parser = PydanticOutputParser(pydantic_object=LinkedInCompany)
+        self.parser = OutputFixingParser.from_llm(parser=base_parser, llm=self.llm)
         # Create prompt template for analysis
         self.prompt = ChatPromptTemplate.from_messages([
             ("system", "You are an expert at analyzing LinkedIn company profiles. Always return valid JSON data with all specified fields."),
@@ -67,7 +68,7 @@ Only return the JSON object, no other text. For employees, focus on finding lead
         Returns:
             str: Clean text content from the HTML
         """
-        soup = BeautifulSoup(html_content)
+        soup = BeautifulSoup(html_content, 'html.parser')
         
         # Remove script and style elements
         for script in soup(["script", "style"]):

@@ -1,7 +1,7 @@
 from typing import Dict, List
 from langchain_mistralai import ChatMistralAI
 from langchain.prompts import ChatPromptTemplate
-from langchain.output_parsers import PydanticOutputParser
+from langchain.output_parsers import PydanticOutputParser, OutputFixingParser
 from pydantic import BaseModel, Field
 import json
 import httpx
@@ -27,7 +27,8 @@ class WebsiteSummarizer:
             api_key: Mistral API key for LLM access
         """
         self.llm = ChatMistralAI(mistral_api_key=api_key)
-        self.parser = PydanticOutputParser(pydantic_object=WebsiteSummary)
+        base_parser = PydanticOutputParser(pydantic_object=WebsiteSummary)
+        self.parser = OutputFixingParser.from_llm(parser=base_parser, llm=self.llm)
         
         self.prompt = ChatPromptTemplate.from_messages([
             ("system", "You are an expert at summarizing B2B company website analysis. Create concise yet comprehensive summaries."),
@@ -99,7 +100,7 @@ class WebsiteSummarizer:
         except httpx.HTTPStatusError as e:
             if e.response.status_code == 429:  # Rate limit error
                 print("Rate limit exceeded, waiting 5 seconds before retry...")
-                time.sleep(2)  # Wait 2 seconds before retrying
+                time.sleep(10)  # Wait 2 seconds before retrying
                 try:
                     # Retry once
                     response = chain.invoke({

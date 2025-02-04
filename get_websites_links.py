@@ -5,7 +5,7 @@ import json
 from langchain_mistralai import ChatMistralAI
 from pydantic import BaseModel, Field
 from langchain_core.prompts import ChatPromptTemplate
-from langchain.output_parsers import PydanticOutputParser
+from langchain.output_parsers import PydanticOutputParser,OutputFixingParser
 
 # Load environment variables from .env
 load_dotenv()
@@ -25,7 +25,8 @@ class WebsiteFinder:
             api_key (str): The Mistral API key for LLM access
         """
         self.llm = ChatMistralAI(mistral_api_key=api_key)
-        self.parser = PydanticOutputParser(pydantic_object=WebsiteResults)
+        base_parser = PydanticOutputParser(pydantic_object=WebsiteResults)
+        self.parser = OutputFixingParser.from_llm(parser=base_parser, llm=self.llm)
         
         self.prompt = ChatPromptTemplate.from_messages([
     ("system", """You are an expert at analyzing search results and extracting official company websites and LinkedIn profiles.

@@ -1,7 +1,7 @@
 from typing import Dict, List
 from langchain_mistralai import ChatMistralAI
 from langchain.prompts import ChatPromptTemplate
-from langchain.output_parsers import PydanticOutputParser
+from langchain.output_parsers import PydanticOutputParser,OutputFixingParser
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, Field
 from typing import List
@@ -62,7 +62,8 @@ class WebsiteAnalyzer:
     def __init__(self, api_key: str):
         """Initialize the LangChain analyzer with Mistral API key"""
         self.llm = ChatMistralAI(mistral_api_key=api_key)
-        self.parser = PydanticOutputParser(pydantic_object=WebsiteAnalysis)
+        base_parser = PydanticOutputParser(pydantic_object=WebsiteAnalysis)
+        self.parser = OutputFixingParser.from_llm(parser=base_parser, llm=self.llm)
         
         self.prompt = ChatPromptTemplate.from_messages([
             ("system", """You are an expert at analyzing B2B company websites and extracting comprehensive business intelligence. 
